@@ -59,6 +59,10 @@ debugger_render_registers(const Chip8 *c8)
 			snprintf(text_buffer, sizeof(text_buffer), "DT = %02X",
 			         c8->timers.dt);
 			break;
+		case REG_COUNT:
+			/* sentinel: not a renderable register */
+			text_buffer[0] = '\0';
+			break;
 		default:
 			break;
 		}
@@ -90,7 +94,7 @@ platform_init_debugger(const char *title, int x, int y, int w, int h)
 }
 
 void
-debugger_shutdown()
+debugger_shutdown(void)
 {
 #ifdef USE_SDL
 	if (debugger_reg_renderer) {

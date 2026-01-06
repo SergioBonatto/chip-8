@@ -143,10 +143,10 @@ platform_create_window(const char *title, int x, int y, int w, int h,
 }
 
 int
-platform_render_text(SDL_Renderer *ren, int x, int y, const char *text)
+platform_render_text(SDL_Renderer *renderer, int x, int y, const char *text)
 {
 #ifdef USE_SDL
-	if (!ren || !text) {
+	if (!renderer || !text) {
 		return -EINVAL;
 	}
 
@@ -157,7 +157,7 @@ platform_render_text(SDL_Renderer *ren, int x, int y, const char *text)
 		return -ENOMEM;
 	}
 
-	SDL_Texture *tex = SDL_CreateTextureFromSurface(ren, surf);
+	SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, surf);
 	SDL_FreeSurface(surf);
 	if (!tex) {
 		return -ENOMEM;
@@ -167,7 +167,7 @@ platform_render_text(SDL_Renderer *ren, int x, int y, const char *text)
 
 	SDL_Rect dst = { x, y, 0, 0 };
 	SDL_QueryTexture(tex, NULL, NULL, &dst.w, &dst.h);
-	SDL_RenderCopy(ren, tex, NULL, &dst);
+	SDL_RenderCopy(renderer, tex, NULL, &dst);
 	SDL_DestroyTexture(tex);
 #endif
 	return 0;

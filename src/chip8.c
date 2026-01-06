@@ -8,8 +8,8 @@
 static inline uint16_t
 chip8_fetch(const Chip8 *c8)
 {
-	const uint8_t hi = memory_read(&c8->mem, c8->pc);
-	const uint8_t lo = memory_read(&c8->mem, c8->pc + 1);
+	const uint8_t hi = (uint8_t)memory_read(&c8->mem, c8->pc);
+	const uint8_t lo = (uint8_t)memory_read(&c8->mem, (uint16_t)(c8->pc + 1u));
 	return (uint16_t)((hi << 8) | lo);
 }
 
@@ -17,7 +17,7 @@ void
 chip8_cycle(Chip8 *c8)
 {
 	const uint16_t opcode = chip8_fetch(c8);
-	c8->pc += 2;
+	c8->pc = (uint16_t)(c8->pc + 2u);
 	dispatch(c8, opcode);
 }
 
