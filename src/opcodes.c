@@ -433,7 +433,7 @@ static inline void
 op_fx65(Chip8 *c8, uint16_t o)
 {
 	for (uint8_t i = 0; i <= ((o >> 8) & 0xF); i++) {
-		c8->V[i] = memory_read(&c8->mem, c8->I + i);
+		c8->V[i] = (uint8_t)memory_read(&c8->mem, c8->I + i);
 	}
 }
 

@@ -12,7 +12,7 @@ typedef struct __attribute__((packed)) {
 } Memory;
 
 void memory_init(Memory *m);
-uint8_t memory_read(const Memory *m, uint16_t addr);
+int memory_read(const Memory *m, uint16_t addr);
 int memory_write(Memory *m, uint16_t addr, uint8_t val);
 int memory_load_rom(Memory *m, const char *path);
 
