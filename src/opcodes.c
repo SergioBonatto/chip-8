@@ -417,18 +417,26 @@ op_fx29(Chip8 *c8, uint16_t o)
 static inline void
 op_fx33(Chip8 *c8, uint16_t o)
 {
-	uint8_t v = c8->V[(o >> 8) & 0xF];
-	memory_write(&c8->mem, c8->I, v / 100);
-	memory_write(&c8->mem, c8->I + 1, (v / 10) % 10);
-	memory_write(&c8->mem, c8->I + 2, v % 10);
+	const uint8_t x = (uint8_t)((o >> 8) & 0x0Fu);
+	const uint8_t v = c8->V[x];
+
+	memory_write(&c8->mem, c8->I, (uint8_t)(v / 100u));
+	memory_write(&c8->mem, (uint16_t)(c8->I + (uint16_t)1u),
+	                (uint8_t)((v / 10u) % 10u));
+	memory_write(&c8->mem, (uint16_t)(c8->I + (uint16_t)2u),
+	                (uint8_t)(v % 10u));
 }
 
 // LD [I], Vx
 static inline void
 op_fx55(Chip8 *c8, uint16_t o)
 {
-	for (uint8_t i = 0; i <= ((o >> 8) & 0xF); i++) {
-		memory_write(&c8->mem, c8->I + i, c8->V[i]);
+	const uint8_t x = (uint8_t)((o >> 8) & 0x0Fu);
+
+	for (uint8_t i = 0; i <= x; i++) {
+		(void)memory_write(&c8->mem,
+		                   (uint16_t)(c8->I + (uint16_t)i),
+		                   c8->V[i]);
 	}
 }
 
@@ -436,8 +444,11 @@ op_fx55(Chip8 *c8, uint16_t o)
 static inline void
 op_fx65(Chip8 *c8, uint16_t o)
 {
-	for (uint8_t i = 0; i <= ((o >> 8) & 0xF); i++) {
-		c8->V[i] = (uint8_t)memory_read(&c8->mem, c8->I + i);
+	const uint8_t x = (uint8_t)((o >> 8) & 0x0Fu);
+
+	for (uint8_t i = 0; i <= x; i++) {
+		c8->V[i] = (uint8_t)memory_read(&c8->mem,
+		                                (uint16_t)(c8->I + (uint16_t)i));
 	}
 }
 
