@@ -11,7 +11,7 @@ memory_init(Memory *m)
 	memcpy(&m->memory[FONTSET_ADDR], chip8_fontset, sizeof(chip8_fontset));
 }
 
-uint8_t
+int
 memory_read(const Memory *m, uint16_t addr)
 {
 	if (addr >= MEM_SIZE) {

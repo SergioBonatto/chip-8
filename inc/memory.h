@@ -5,14 +5,14 @@
 
 #define START_ADDR   0x200U
 #define MEM_SIZE     4096U
-#define FONTSET_ADDR 0x50U
+#define FONTSET_ADDR ((uint16_t)(0x50))
 
 typedef struct __attribute__((packed)) {
 	uint8_t memory[MEM_SIZE];
 } Memory;
 
 void memory_init(Memory *m);
-uint8_t memory_read(const Memory *m, uint16_t addr);
+int memory_read(const Memory *m, uint16_t addr);
 int memory_write(Memory *m, uint16_t addr, uint8_t val);
 int memory_load_rom(Memory *m, const char *path);
 
