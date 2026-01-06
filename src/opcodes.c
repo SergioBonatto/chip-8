@@ -124,7 +124,7 @@ op_00ee(Chip8 *c8, uint16_t op __attribute__((unused)))
 	if (c8->sp == 0) {
 		return;
 	}
-	c8->pc = c8->stack[--c8->sp];
+	c8->pc = (uint16_t)c8->stack[--c8->sp];
 }
 
 static inline void
@@ -141,15 +141,15 @@ op_0xxx(Chip8 *c8, uint16_t op)
 static inline void
 op_1nnn(Chip8 *c8, uint16_t op)
 {
-	c8->pc = op & 0xFFF;
+	c8->pc = (uint16_t)(op & 0xFFF);
 }
 
 // CALL
 static inline void
 op_2nnn(Chip8 *c8, uint16_t op)
 {
-	c8->stack[c8->sp++] = c8->pc;
-	c8->pc = op & 0xFFF;
+	c8->stack[c8->sp++] = (uint16_t)c8->pc;
+	c8->pc = (uint16_t)(op & 0xFFF);
 }
 
 /* ============================================================
@@ -162,7 +162,7 @@ op_3xkk(Chip8 *c8, uint16_t op)
 {
 	uint8_t x = (op >> 8) & 0xF;
 	if (c8->V[x] == (op & 0xFF)) {
-		c8->pc += 2;
+		c8->pc = (uint16_t)(c8->pc + 2u);
 	}
 }
 
@@ -172,7 +172,7 @@ op_4xkk(Chip8 *c8, uint16_t op)
 {
 	uint8_t x = (op >> 8) & 0xF;
 	if (c8->V[x] != (op & 0xFF)) {
-		c8->pc += 2;
+		c8->pc = (uint16_t)(c8->pc + 2u);
 	}
 }
 
@@ -183,7 +183,7 @@ op_5xy0(Chip8 *c8, uint16_t op)
 	uint8_t x = (op >> 8) & 0xF;
 	uint8_t y = (op >> 4) & 0xF;
 	if (c8->V[x] == c8->V[y]) {
-		c8->pc += 2;
+		c8->pc = (uint16_t)(c8->pc + 2u);
 	}
 }
 
@@ -195,7 +195,7 @@ op_5xy0(Chip8 *c8, uint16_t op)
 static inline void
 op_6xkk(Chip8 *c8, uint16_t op)
 {
-	c8->V[(op >> 8) & 0xF] = op & 0xFF;
+	c8->V[(op >> 8) & 0xF] = (uint8_t)(op & 0xFF);
 }
 
 // ADD Vx, byte
@@ -243,7 +243,7 @@ static inline void
 op_8xy4(Chip8 *c8, uint16_t op)
 {
 	uint8_t x = (op >> 8) & 0xF, y = (op >> 4) & 0xF;
-	uint16_t s = c8->V[x] + c8->V[y];
+	uint16_t s = (uint16_t)(c8->V[x] + (uint16_t)c8->V[y]);
 	c8->V[0xF] = s > 0xFF;
 	c8->V[x] = (uint8_t)s;
 }
@@ -254,7 +254,7 @@ op_8xy5(Chip8 *c8, uint16_t op)
 {
 	uint8_t x = (op >> 8) & 0xF, y = (op >> 4) & 0xF;
 	c8->V[0xF] = c8->V[x] > c8->V[y];
-	c8->V[x] -= c8->V[y];
+	c8->V[x] = (uint8_t)(c8->V[x] - c8->V[y]);
 }
 
 // SHR Vx {, Vy}
@@ -272,7 +272,7 @@ op_8xy7(Chip8 *c8, uint16_t op)
 {
 	uint8_t x = (op >> 8) & 0xF, y = (op >> 4) & 0xF;
 	c8->V[0xF] = c8->V[y] > c8->V[x];
-	c8->V[x] = c8->V[y] - c8->V[x];
+	c8->V[x] = (uint8_t)(c8->V[y] - c8->V[x]);
 }
 
 // SHL Vx {, Vy}
@@ -281,7 +281,7 @@ op_8xye(Chip8 *c8, uint16_t op)
 {
 	uint8_t x = (op >> 8) & 0xF;
 	c8->V[0xF] = (c8->V[x] >> 7) & 1;
-	c8->V[x] <<= 1;
+	c8->V[x] = (uint8_t)(c8->V[x] << 1u);
 }
 
 static inline void
@@ -299,7 +299,7 @@ static inline void
 op_9xy0(Chip8 *c8, uint16_t o)
 {
 	if (c8->V[(o >> 8) & 0xF] != c8->V[(o >> 4) & 0xF]) {
-		c8->pc += 2;
+		c8->pc = (uint16_t)(c8->pc + 2u);
 	}
 }
 
@@ -314,14 +314,14 @@ op_annn(Chip8 *c8, uint16_t o)
 static inline void
 op_bnnn(Chip8 *c8, uint16_t o)
 {
-	c8->pc = (o & 0xFFF) + c8->V[0];
+	c8->pc = (uint16_t)((o & 0xFFF) + (uint16_t)c8->V[0]);
 }
 
 // RND Vx, byte
 static inline void
 op_cxkk(Chip8 *c8, uint16_t o)
 {
-	c8->V[(o >> 8) & 0xF] = (rand() & 0xFF) & (o & 0xFF);
+	c8->V[(o >> 8) & 0xF] = (uint8_t)((rand() & 0xFF) & (o & 0xFF));
 }
 
 /* ============================================================
@@ -347,7 +347,7 @@ static inline void
 op_ex9e(Chip8 *c8, uint16_t o)
 {
 	if (c8->input.keys[c8->V[(o >> 8) & 0xF]]) {
-		c8->pc += 2;
+		c8->pc = (uint16_t)(c8->pc + 2u);
 	}
 }
 
@@ -356,7 +356,7 @@ static inline void
 op_exa1(Chip8 *c8, uint16_t o)
 {
 	if (!c8->input.keys[c8->V[(o >> 8) & 0xF]]) {
-		c8->pc += 2;
+		c8->pc = (uint16_t)(c8->pc + 2u);
 	}
 }
 
@@ -402,7 +402,7 @@ op_fx18(Chip8 *c8, uint16_t o)
 static inline void
 op_fx1e(Chip8 *c8, uint16_t o)
 {
-	c8->I += c8->V[(o >> 8) & 0xF];
+	c8->I = (uint16_t)(c8->I + (uint16_t)c8->V[(o >> 8) & 0xF]);
 }
 
 // LD F, Vx
