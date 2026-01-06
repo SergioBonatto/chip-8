@@ -5,7 +5,7 @@
 
 #define START_ADDR   0x200U
 #define MEM_SIZE     4096U
-#define FONTSET_ADDR 0x50U
+#define FONTSET_ADDR ((uint16_t)(0x50))
 
 typedef struct __attribute__((packed)) {
 	uint8_t memory[MEM_SIZE];

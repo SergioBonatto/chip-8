@@ -409,7 +409,8 @@ op_fx1e(Chip8 *c8, uint16_t o)
 static inline void
 op_fx29(Chip8 *c8, uint16_t o)
 {
-	c8->I = FONTSET_ADDR + c8->V[(o >> 8) & 0xF] * 5;
+	c8->I = (uint16_t)(FONTSET_ADDR +
+                   ((uint16_t)c8->V[(o >> 8) & 0x0Fu] * (uint16_t)5u));
 }
 
 // LD B, Vx
